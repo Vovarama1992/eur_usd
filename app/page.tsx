@@ -11,6 +11,26 @@ const initial_moneys = {
 export default function Calc() {
   const [moneys, dispatch] = useReducer(moneyReducer, initial_moneys);
   const { eur, usd } = moneys;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: 'eur' | 'usd',
+  ) => {
+    let value = e.target.value;
+
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+
+    if (cleanValue === '') {
+      value = '0';
+    } else {
+      value = String(parseFloat(cleanValue));
+    }
+
+    dispatch({
+      type: type,
+      value: value === '0' ? 0 : Number(value),
+    });
+  };
+
   return (
     <main>
       <div className="absolute flex flex-col lg:flex-row items-center justify-center gap-[5%] left-[5%] lg:left-[15%] top-[5%] lg:top-[15%] w-[90%] lg:w-[60%] h-[90%] lg:h-[60%]">
@@ -18,32 +38,22 @@ export default function Calc() {
           <label htmlFor="eur">EUR</label>
           <input
             id="eur"
-            value={eur === 0 ? '' : eur}
+            type="text"
+            value={eur}
             className={input_style}
             name="usd"
-            type="number"
-            onChange={(e) => {
-              dispatch({
-                type: 'eur',
-                value: Number(e.target.value),
-              });
-            }}
+            onChange={(e) => handleChange(e, 'eur')}
           ></input>
         </div>
         <div className={input_block}>
           <label htmlFor="usd">USD</label>
           <input
             id="usd"
-            value={usd === 0 ? '' : usd}
+            type="text"
+            value={usd}
             className={input_style}
             name="eur"
-            type="number"
-            onChange={(e) => {
-              dispatch({
-                type: 'usd',
-                value: Number(e.target.value),
-              });
-            }}
+            onChange={(e) => handleChange(e, 'usd')}
           ></input>
         </div>
       </div>
